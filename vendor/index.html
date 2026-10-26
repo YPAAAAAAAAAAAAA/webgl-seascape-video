@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>webgl-seascape-video</title>
+<link rel="stylesheet" href="sea.css">
+</head>
+<body>
+<canvas id="canvas" aria-label="Live seascape reel"></canvas>
+<button id="toggle" type="button" aria-label="Scenes" aria-expanded="false" aria-controls="panel"><i></i><i></i><i></i></button>
+<div id="panel">
+  <p id="help">One finger orbits. Two fingers zoom and slide.</p>
+  <div id="eps">
+    <button type="button" data-ep="0" class="on">Glass tide<small>玻璃海潮</small></button>
+    <button type="button" data-ep="1">Poster sea<small>海报海面</small></button>
+    <button type="button" data-ep="2">Black well<small>黑洞井</small></button>
+    <button type="button" data-ep="3">Mist valley<small>烟雨山谷</small></button>
+  </div>
+  <div id="styles">
+    <button type="button" data-style="0">Pixel</button>
+    <button type="button" data-style="1">Facet</button>
+    <button type="button" data-style="2" class="on">Toon</button>
+    <button type="button" data-style="3">Oil</button>
+    <button type="button" data-style="4">Ink</button>
+  </div>
+  <button id="replay" type="button">Replay build</button>
+  <label id="scrubwrap">Build<input id="scrub" type="range" min="0" max="1000" value="1000"></label>
+  <p id="panelcredit">idea after @holooooo (holooooo/webgl-seascape-video); clean-room implementation, no code copied</p>
+</div>
+<p id="hint">One finger orbits · two fingers zoom</p>
+<p id="credit">idea after @holooooo (holooooo/webgl-seascape-video); clean-room implementation, no code copied</p>
+<script src="sea.js"></script>
+</body>
+</html>
