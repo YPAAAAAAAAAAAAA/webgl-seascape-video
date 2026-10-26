@@ -1,0 +1,20 @@
+{
+  "id": "webgl-seascape-video",
+  "title": {
+    "en": "webgl-seascape-video",
+    "zh": "WebGL海景视频"
+  },
+  "intro": {
+    "en": "A live WebGL2 reel of four original scenes: a glassy tide, a poster sea, a black-hole well, and a misted voxel valley. One finger orbits, two fingers zoom. Replay how each frame is built.",
+    "zh": "四段原创 WebGL2 海景短片：玻璃海潮、海报海面、黑洞井与烟雨体素山谷。单指环视，双指缩放，并可回放每一帧的搭建过程。"
+  },
+  "officialFiles": [
+    "vendor/index.html",
+    "vendor/sea.css",
+    "vendor/sea.js",
+    "vendor/LICENSE.txt"
+  ],
+  "playHtml": "play.html",
+  "aspect": "phone",
+  "githubRepo": "ypaaaaaaaaaaaaa/webgl-seascape-video"
+}
