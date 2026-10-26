@@ -753,6 +753,7 @@
     cam.tz = clamp(cam.tz, -8, 8);
   }
   canvas.addEventListener("pointerdown", function (e) {
+    startSea();
     try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
     ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
     ptrCount++;
@@ -904,14 +905,25 @@
 
   var bufW = 0;
   var bufH = 0;
+  var resCap = 800;
+  var softGL = false;
+  (function detectSoft() {
+    var info = gl.getExtension("WEBGL_debug_renderer_info");
+    if (!info) {
+      resCap = 280;
+      return;
+    }
+    var name = String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL) || "");
+    softGL = /swiftshader|llvmpipe|softpipe|software/i.test(name);
+    if (softGL) resCap = 280;
+  })();
   function resize() {
     var w = canvas.clientWidth || 0;
     var h = canvas.clientHeight || 0;
     if (w < 2 || h < 2) return false;
-    var ratio = Math.min(window.devicePixelRatio || 1, 1);
-    var W = Math.max(2, Math.round(w * ratio));
-    var H = Math.max(2, Math.round(h * ratio));
-    var cap = 450;
+    var W = Math.max(2, Math.round(w));
+    var H = Math.max(2, Math.round(h));
+    var cap = resCap;
     if (H > cap) { W = Math.max(2, Math.round(W * cap / H)); H = cap; }
     if (W > cap) { H = Math.max(2, Math.round(H * cap / W)); W = cap; }
     if (W !== bufW || H !== bufH) {
@@ -980,7 +992,22 @@
   }
 
   var last = performance.now();
+  var nextDrawAt = 0;
+  function paceAfter(cost) {
+    if (frames <= 1 || cost < 28) {
+      nextDrawAt = 0;
+      return;
+    }
+    if (frames > 1 && resCap > (softGL ? 112 : 200)) {
+      resCap = Math.max(softGL ? 112 : 200, Math.round(resCap * 0.7));
+      bufW = 0;
+    }
+    var worst = Math.min(1200, Math.max(cost, 40));
+    var maxN = Math.max(1, Math.min(4, Math.floor(1400 / worst)));
+    nextDrawAt = performance.now() + Math.ceil(3600 / maxN);
+  }
   function frame(now) {
+    requestAnimationFrame(frame);
     var dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
     last = now;
     if (reduce) dt *= 0.15;
@@ -994,17 +1021,17 @@
       build = 1;
     }
     lerpCam(dt);
-    if (resize()) {
-      if (draw()) {
-        frames++;
-        signalReady();
-        if (frames === 2) {
-          touchFloat();
-          startSea();
-        }
-      }
+    if (now < nextDrawAt) return;
+    var t0 = performance.now();
+    var drew = false;
+    if (resize()) drew = !!draw();
+    var cost = performance.now() - t0;
+    if (drew) {
+      frames++;
+      signalReady();
+      if (frames === 2) setTimeout(touchFloat, 40);
     }
-    requestAnimationFrame(frame);
+    paceAfter(cost);
   }
 
   setTimeout(function () { if (hint) hint.classList.add("off"); }, 3800);
